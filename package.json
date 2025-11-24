@@ -9,8 +9,13 @@
   "description": "Um clone do projeto tabnews",
   "main": "index.js",
   "scripts": {
-    "dev": "next dev"  
+    "dev": "next dev",
+    "lint:check": "prettier --check .",
+    "lint:write": "prettier --write ."
   },
   "author": "Paizao",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "prettier": "^3.6.2"
+  }
 }
