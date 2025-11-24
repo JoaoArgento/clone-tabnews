@@ -9,7 +9,7 @@
   "description": "Um clone do projeto tabnews",
   "main": "index.js",
   "scripts": {
-    
+    "dev": "next dev"  
   },
   "author": "Paizao",
   "license": "MIT"
