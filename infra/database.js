@@ -1,7 +1,6 @@
 import { Client } from "pg";
 
-async function Query(queryInfo)
-{
+async function Query(queryInfo) {
   const client = new Client({
     host: process.env.POSTGRES_HOST,
     port: process.env.POSTGRES_PORT,
@@ -9,15 +8,18 @@ async function Query(queryInfo)
     password: process.env.POSTGRES_PASSWORD,
     database: process.env.POSTGRES_DB,
   });
-  
-  await client.connect();
-  const result = await client.query(queryInfo);
-  await client.end();
-
-  return result;
+  try {
+    await client.connect();
+    const result = await client.query(queryInfo);
+    return result;
+  } catch (exception) {
+    console.log("algo deu errado!");
+  } finally {
+    await client.end();
+  }
+  return "";
 }
-
 
 export default {
-  query: Query
-}
+  query: Query,
+};
