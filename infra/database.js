@@ -13,7 +13,8 @@ async function Query(queryInfo) {
     const result = await client.query(queryInfo);
     return result;
   } catch (exception) {
-    console.log("algo deu errado!");
+    console.log(exception);
+    throw exception;
   } finally {
     await client.end();
   }
