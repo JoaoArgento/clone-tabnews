@@ -22,7 +22,7 @@ async function migrations(request, response) {
   if (request.method === "GET") {
     return response.status(200).json(migrations);
   }
-  return response.status(405).end();
+  return response.status(404).end();
 }
 
 export default migrations;
