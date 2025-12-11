@@ -5,11 +5,11 @@ async function waitForAllServices() {
 
   async function waitForWebServer() {
     return AsyncRetry(
-      async () => {
+      async (bail, tryNumber) => {
         const response = await fetch("http://localhost:3000/api/v1/status");
         await response.json();
       },
-      { retries: 100 },
+      { retries: 100, maxTimeout: 3000 },
     );
   }
 }
