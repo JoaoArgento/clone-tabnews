@@ -6,8 +6,15 @@ async function waitForAllServices() {
   async function waitForWebServer() {
     return AsyncRetry(
       async (bail, tryNumber) => {
-        const response = await fetch("http://localhost:3000/api/v1/status");
-        await response.json();
+        try {
+          const response = await fetch("http://localhost:3000/api/v1/status");
+
+          if (!response.ok) {
+            throw new Error(`deu erro ${response.status}`);
+          }
+        } catch (error) {
+          throw error;
+        }
       },
       { retries: 100, maxTimeout: 3000 },
     );
