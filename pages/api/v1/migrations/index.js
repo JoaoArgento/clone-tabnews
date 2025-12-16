@@ -29,6 +29,7 @@ async function migrations(request, response) {
     }
     return response.status(405).end();
   } catch (exception) {
+    console.log(exception);
     throw exception;
   } finally {
     await dbClient.end();
