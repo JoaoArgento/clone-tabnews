@@ -31,6 +31,8 @@
   "author": "Paizao",
   "license": "MIT",
   "devDependencies": {
+    "@commitlint/cli": "^19.3.0",
+    "@commitlint/config-conventional": "^19.2.2",
     "concurrently": "^8.2.2",
     "eslint": "^8.57.1",
     "eslint-config-next": "^13.5.11",
