@@ -16,7 +16,7 @@ async function migrations(request, response) {
       verbose: true,
       migrationsTable: "pgmigrations",
     };
-    console.log(request.method);
+
     const migrations = await migrationRunner(defaultMigrationOptions);
 
     if (request.method === "POST") {
