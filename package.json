@@ -22,6 +22,7 @@
     "lint:prettier:write": "prettier --write .",
     "lint:eslint:check": "next lint --dir .",
     "test": "npm run docker:up && concurrently -n next,jest --hide next -k -s command-jest \"next dev\" \"jest --runInBand\"",
+    "posttest": "npm run docker:stop",
     "test:watch": "jest --watchAll --runInBand",
     "docker:up": "docker compose -f infra/compose.yaml up -d",
     "docker:down": "docker compose -f infra/compose.yaml down",
