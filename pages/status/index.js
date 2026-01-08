@@ -23,7 +23,7 @@ function StatusInfo() {
       <div>
         <p>Versão: {databaseInfo.version}</p>
         <p>Conexões: {databaseInfo.open_connections}</p>
-        <p>Conexões máximas: {databaseInfo.open_connections}</p>
+        <p>Conexões máximas: {databaseInfo.max_connections}</p>
       </div>
     );
   }
@@ -41,7 +41,6 @@ function StatusInfo() {
 export default function StatusPage() {
   return (
     <>
-      <h1>Alo</h1>
       <StatusInfo />
     </>
   );
