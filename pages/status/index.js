@@ -23,7 +23,7 @@ function StatusInfo() {
       <div>
         <p>Versão: {databaseInfo.version}</p>
         <p>Conexões: {databaseInfo.open_connections}</p>
-        <p>Conexões máximas: {databaseInfo.open_connections}</p>
+        <p>Conexões máximas: {databaseInfo.max_connections}</p>
       </div>
     );
   }
