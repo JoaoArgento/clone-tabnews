@@ -6,25 +6,34 @@ async function fetchAPI(key) {
   return responseBody;
 }
 
-function UpdatedAt() {
+function StatusInfo() {
   const { isLoading, data } = useSWR("/api/v1/status", fetchAPI, {
     refreshInterval: 200,
   });
 
   let updatedAt = "carregando...";
-  let databaseDependencies = "Obtendo dados...";
+  let databaseInfo = undefined;
+  let databaseInfoVisual = "Obtendo dados...";
 
   if (!isLoading) {
     updatedAt = new Date(data.updated_at).toLocaleString();
-    databaseDependencies = data.dependencies.database;
+    databaseInfo = data.dependencies.database;
+
+    databaseInfoVisual = (
+      <div>
+        <p>Versão: {databaseInfo.version}</p>
+        <p>Conexões: {databaseInfo.open_connections}</p>
+        <p>Conexões máximas: {databaseInfo.open_connections}</p>
+      </div>
+    );
   }
 
   return (
     <div>
+      <h1>Status</h1>
       <p>Ultima atualização: {updatedAt}</p>
-      <p>Versão do banco: {databaseDependencies.version} </p>
-      <p>Conexões do banco: {databaseDependencies.open_connections} </p>
-      <p>Máximo de conexões: {databaseDependencies.max_connections} </p>
+      <h1>Database info</h1>
+      <div>{databaseInfoVisual}</div>
     </div>
   );
 }
@@ -33,7 +42,7 @@ export default function StatusPage() {
   return (
     <>
       <h1>Alo</h1>
-      <UpdatedAt />
+      <StatusInfo />
     </>
   );
 }
