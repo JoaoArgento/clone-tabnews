@@ -41,7 +41,6 @@ function StatusInfo() {
 export default function StatusPage() {
   return (
     <>
-      <h1>Alo</h1>
       <StatusInfo />
     </>
   );
