@@ -10,7 +10,8 @@
     "pg": "8.16.3",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "secretlint": "9.3.4"
+    "secretlint": "9.3.4",
+    "swr": "2.2.5"
   },
   "name": "clone-tabnews",
   "version": "1.0.0",
