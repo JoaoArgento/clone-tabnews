@@ -3,6 +3,14 @@ import { resolve } from "path";
 import database from "infra/database";
 
 async function migrations(request, response) {
+  const allowedMethods = ["GET", "POST"];
+
+  if (!allowedMethods.includes(request.method)) {
+    return response
+      .status(405)
+      .json({ error: `METODO ${request.method} NÃO PERMITIDO!` });
+  }
+
   let dbClient;
 
   try {
