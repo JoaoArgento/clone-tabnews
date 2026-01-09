@@ -1,12 +1,39 @@
-export class InternalServerError extends Error {
-  constructor({ cause }) {
-    super("Um erro interno inesperado aconteceu!", {
-      cause,
-    });
-    this.name = "InternalServerError";
-    this.action = "Entre em contato com o suporte";
-    this.statusCode = 500;
+// export class InternalServerError extends Error {
+//   constructor({ cause }) {
+//     super("Um erro interno inesperado aconteceu!", {
+//       cause,
+//     });
+//     this.name = "InternalServerError";
+//     this.action = "Entre em contato com o suporte";
+//     this.statusCode = 500;
+//   }
+//   toJSON() {
+//     return {
+//       name: this.name,
+//       message: this.message,
+//       action: this.action,
+//       status_code: this.statusCode,
+//     };
+//   }
+// }
+
+export class CustomError extends Error {
+  constructor(name, message, action, statusCode, cause) {
+    super(message, { cause });
+    this.name = name;
+    this.action = action;
+    this.statusCode = statusCode;
   }
+  withCause(cause) {
+    this.cause = cause;
+    return this;
+  }
+
+  withStatusCode(statusCode) {
+    this.statusCode = statusCode;
+    return this;
+  }
+
   toJSON() {
     return {
       name: this.name,
@@ -16,3 +43,33 @@ export class InternalServerError extends Error {
     };
   }
 }
+
+let errorFactory = {
+  getInternalServerError: () => {
+    return new CustomError(
+      "InternalServerError",
+      "Um erro interno inesperado aconteceu!",
+      "Entre em contato com o suporte",
+      500,
+    );
+  },
+  getMethodNotAllowedError: () => {
+    return new CustomError(
+      "MethodNotAllowedError",
+      "Método não permitido para este endpoint",
+      "Verifique se o método HTTP é válido para este endpoint",
+      405,
+    );
+  },
+
+  getServiceError: () => {
+    return new CustomError(
+      "ServiceError",
+      "Serviço indisponivel no momento",
+      "Verifique se esse serviço existe!",
+      503,
+    );
+  },
+};
+
+export { errorFactory };

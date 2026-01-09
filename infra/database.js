@@ -1,5 +1,5 @@
 import { Client } from "pg";
-
+import { errorFactory } from "./errors";
 async function query(queryInfo) {
   let client;
   try {
@@ -7,8 +7,7 @@ async function query(queryInfo) {
     const result = await client.query(queryInfo);
     return result;
   } catch (exception) {
-    console.log(exception);
-    throw exception;
+    throw errorFactory.getServiceError().withCause(exception);
   } finally {
     await client?.end();
   }

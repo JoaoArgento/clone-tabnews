@@ -18,8 +18,6 @@ async function waitForAllServices() {
           console.log(error);
 
           throw error;
-        } finally {
-          console.log("Consegui!");
         }
       },
       { retries: 100, maxTimeout: 3000 },

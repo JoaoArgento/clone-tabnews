@@ -1,44 +1,44 @@
 import migrationRunner from "node-pg-migrate";
 import { resolve } from "path";
 import database from "infra/database";
+import { createRouter } from "next-connect";
+import controller from "infra/controller";
+const router = createRouter();
 
-async function migrations(request, response) {
-  let dbClient;
+router.get(getHandler);
+router.post(postHandler);
 
-  try {
-    dbClient = await database.getNewClient();
+export default router.handler(controller.errorHandlers);
 
-    // const migrationsDir =
-    //   process.env.NODE_ENV === "production"
-    //     ? join("infra", "migrations")
-    //     : resolve("infra", "migrations");
-
-    const defaultMigrationOptions = {
-      dbClient: dbClient,
-      dryRun: request.method === "GET",
-      dir: resolve("infra", "migrations"),
-      direction: "up",
-      verbose: true,
-      migrationsTable: "pgmigrations",
-    };
-
-    const migrations = await migrationRunner(defaultMigrationOptions);
-
-    if (request.method === "POST") {
-      return response
-        .status(migrations.length > 0 ? 201 : 200)
-        .json(migrations);
-    }
-    if (request.method === "GET") {
-      return response.status(200).json(migrations);
-    }
-    return response.status(405).end();
-  } catch (exception) {
-    console.log(exception);
-    throw exception;
-  } finally {
-    await dbClient.end();
-  }
+async function getHandler(request, response) {
+  const migrations = await getMigrations(true);
+  return response.status(200).json(migrations);
 }
 
-export default migrations;
+async function postHandler(request, response) {
+  const migrations = await getMigrations(false);
+  return response.status(migrations.length > 0 ? 201 : 200).json(migrations);
+}
+
+async function getMigrations(dryRun) {
+  let dbClient = await database.getNewClient();
+  if (dbClient == null) {
+    throw new ReferenceError("db client não foi definido");
+  }
+  const migrationOptions = getMigrationOptions(dbClient, dryRun);
+  const migrations = await migrationRunner(migrationOptions);
+  dbClient.end();
+
+  return migrations;
+}
+
+function getMigrationOptions(dbClient, dryRun) {
+  return {
+    dbClient: dbClient,
+    dryRun: dryRun,
+    dir: resolve("infra", "migrations"),
+    direction: "up",
+    verbose: true,
+    migrationsTable: "pgmigrations",
+  };
+}
