@@ -10,7 +10,8 @@ describe("POST in api/v1/status", () => {
       const response = await fetch("http://localhost:3000/api/v1/status", {
         method: "POST",
       });
-      expect(response.status).toBe(405);
+
+      expect(response.status).toEqual(405);
 
       const responseBody = await response.json();
 

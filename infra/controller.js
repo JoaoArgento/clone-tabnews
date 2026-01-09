@@ -1,13 +1,12 @@
-import { errors } from "infra/errors";
+import { errorFactory } from "infra/errors";
 
 function onErrorHandler(error, request, response) {
-  const internalError = errors.getInternalServerError().withCause(error);
-
+  const internalError = errorFactory.getInternalServerError();
   response.status(internalError.statusCode).json(internalError);
 }
 
 function onNoMatchHandler(request, response) {
-  const methodNotAllowedError = errors.getMethodNotAllowedError();
+  const methodNotAllowedError = errorFactory.getMethodNotAllowedError();
   response.status(methodNotAllowedError.statusCode).json(methodNotAllowedError);
 }
 
