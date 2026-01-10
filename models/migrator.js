@@ -20,8 +20,8 @@ function getMigrationOptions(dbClient, dryRun) {
     dryRun: dryRun,
     dir: resolve("infra", "migrations"),
     direction: "up",
-    verbose: true,
     migrationsTable: "pgmigrations",
+    log: () => {},
   };
 }
 
