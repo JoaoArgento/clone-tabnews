@@ -12,7 +12,8 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "secretlint": "9.3.4",
-    "swr": "2.2.5"
+    "swr": "2.2.5",
+    "uuid": "11.1.0"
   },
   "name": "clone-tabnews",
   "version": "1.0.0",
