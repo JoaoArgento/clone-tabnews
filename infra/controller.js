@@ -1,8 +1,11 @@
 import { errorFactory } from "infra/errors";
 
 function onErrorHandler(error, request, response) {
-  const internalError = errorFactory.getInternalServerError();
-  response.status(internalError.statusCode).json(internalError);
+  // const internalError = errorFactory
+  //   .getInternalServerError()
+  //   .withStatusCode(error.statusCode);
+  console.log(error);
+  response.status(error.statusCode).json(error);
 }
 
 function onNoMatchHandler(request, response) {
