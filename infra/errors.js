@@ -35,6 +35,14 @@ export class CustomError extends Error {
 }
 
 let errorFactory = {
+  getNotFoundError: () => {
+    return new CustomError(
+      "NotFoundError",
+      "O username informado não foi encontrado no sistema",
+      "verifique se o usuário existe",
+      404,
+    );
+  },
   getInternalServerError: () => {
     return new CustomError(
       "InternalServerError",
