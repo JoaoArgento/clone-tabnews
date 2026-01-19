@@ -1,18 +1,6 @@
 import database from "infra/database";
 import { errorFactory } from "infra/errors.js";
 
-async function validateUniqueEmail(email) {
-  const result = await database.query({
-    text: "SELECT email FROM users WHERE LOWER(email) = LOWER($1)",
-    values: [email],
-  });
-
-  if (result.rowCount > 0) {
-    const error = errorFactory.getValidationError();
-    throw error;
-  }
-}
-
 async function validateUniqueInfo(colName, info) {
   const result = await database.query({
     text: `SELECT ${colName} FROM users WHERE LOWER(${colName}) = LOWER($1)`,
@@ -35,6 +23,19 @@ async function runInsertQuery(userInput) {
   return results.rows[0];
 }
 
+async function findOneByUsername(username) {
+  const result = await database.query({
+    text: "SELECT * FROM users WHERE LOWER(username) = LOWER($1) LIMIT 1",
+    values: [username],
+  });
+
+  if (result.rowCount == 0)
+  {
+    throw errorFactory.getNotFoundError();
+  }
+  return result.rows[0];
+}
+
 async function create(userInput) {
   await validateUniqueInfo("email", userInput.email);
   await validateUniqueInfo("username", userInput.username);
@@ -46,6 +47,7 @@ async function create(userInput) {
 
 const user = {
   create,
+  findOneByUsername,
 };
 
 export default user;
