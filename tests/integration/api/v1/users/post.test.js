@@ -18,7 +18,7 @@ describe("POST in api/v1/users", () => {
         body: JSON.stringify({
           username: "Joaozera1",
           email: "Joaozera@gmail.com",
-          password: "SenhabRABSF",
+          password: "",
         }),
       });
 
@@ -30,7 +30,7 @@ describe("POST in api/v1/users", () => {
         id: responseBody.id,
         username: "Joaozera1",
         email: "Joaozera@gmail.com",
-        password: "SenhabRABSF",
+        password: "",
         created_at: responseBody.created_at,
         updated_at: responseBody.updated_at,
       });
@@ -88,7 +88,7 @@ describe("POST in api/v1/users", () => {
         body: JSON.stringify({
           username: "userduplicado1",
           email: "userduplicado2@gmail.com",
-          password: "aaa",
+          password: "",
         }),
       });
 
@@ -102,7 +102,7 @@ describe("POST in api/v1/users", () => {
         body: JSON.stringify({
           username: "userduplicado1",
           email: "userduplicado1@gmail.com",
-          password: "aaa",
+          password: "",
         }),
       });
 
