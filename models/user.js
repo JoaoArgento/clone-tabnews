@@ -29,8 +29,7 @@ async function findOneByUsername(username) {
     values: [username],
   });
 
-  if (result.rowCount == 0)
-  {
+  if (result.rowCount == 0) {
     throw errorFactory.getNotFoundError();
   }
   return result.rows[0];
