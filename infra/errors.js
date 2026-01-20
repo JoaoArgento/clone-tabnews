@@ -1,22 +1,3 @@
-// export class InternalServerError extends Error {
-//   constructor({ cause }) {
-//     super("Um erro interno inesperado aconteceu!", {
-//       cause,
-//     });
-//     this.name = "InternalServerError";
-//     this.action = "Entre em contato com o suporte";
-//     this.statusCode = 500;
-//   }
-//   toJSON() {
-//     return {
-//       name: this.name,
-//       message: this.message,
-//       action: this.action,
-//       status_code: this.statusCode,
-//     };
-//   }
-// }
-
 export class CustomError extends Error {
   constructor(name, message, action, statusCode, cause) {
     super(message, { cause });
@@ -33,6 +14,15 @@ export class CustomError extends Error {
     this.statusCode = statusCode;
     return this;
   }
+  withMessage(message) {
+    this.message = message;
+    return this;
+  }
+
+  withAction(action) {
+    this.action = action;
+    return this;
+  }
 
   toJSON() {
     return {
@@ -45,6 +35,14 @@ export class CustomError extends Error {
 }
 
 let errorFactory = {
+  getNotFoundError: () => {
+    return new CustomError(
+      "NotFoundError",
+      "O username informado não foi encontrado no sistema",
+      "verifique se o usuário existe",
+      404,
+    );
+  },
   getInternalServerError: () => {
     return new CustomError(
       "InternalServerError",
@@ -68,6 +66,14 @@ let errorFactory = {
       "Serviço indisponivel no momento",
       "Verifique se esse serviço existe!",
       503,
+    );
+  },
+  getValidationError: (validatingInfo) => {
+    return new CustomError(
+      "ValidationError",
+      `o ${validatingInfo} já está em uso`,
+      `Utilize um ${validatingInfo} diferente`,
+      400,
     );
   },
 };
