@@ -1,5 +1,6 @@
 import database from "infra/database";
 import { errorFactory } from "infra/errors.js";
+import password from "models/password.js";
 
 async function validateUniqueInfo(colName, info) {
   const result = await database.query({
@@ -35,9 +36,15 @@ async function findOneByUsername(username) {
   return result.rows[0];
 }
 
+async function hashPasswordInObject(userInput) {
+  const hashedPassword = password.hash(userInput.password);
+  userInput.password = hashedPassword;
+}
+
 async function create(userInput) {
   await validateUniqueInfo("email", userInput.email);
   await validateUniqueInfo("username", userInput.username);
+  await hashPasswordInObject(userInput);
 
   const newUser = await runInsertQuery(userInput);
 
