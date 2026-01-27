@@ -10,22 +10,14 @@ beforeAll(async () => {
 describe("GET in api/v1/users/[username]", () => {
   describe("Anonymous User", () => {
     test("With exact case match", async () => {
-      const response1 = await fetch("http://localhost:3000/api/v1/users", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          username: "mesmoCase",
-          email: "mesmo.case@gmail.com",
-          password: "aaa",
-        }),
+      await orchestrator.createUser({
+        username: "Joaozera",
+        email: "Joaozera@gmail.com",
+        password: "Alo",
       });
 
-      expect(response1.status).toBe(201);
-
       const response2 = await fetch(
-        "http://localhost:3000/api/v1/users/mesmoCase",
+        "http://localhost:3000/api/v1/users/Joaozera",
       );
 
       expect(response2.status).toBe(200);
@@ -34,8 +26,8 @@ describe("GET in api/v1/users/[username]", () => {
 
       expect(response2Body).toEqual({
         id: response2Body.id,
-        username: "mesmoCase",
-        email: "mesmo.case@gmail.com",
+        username: "Joaozera",
+        email: "Joaozera@gmail.com",
         password: response2Body.password,
         created_at: response2Body.created_at,
         updated_at: response2Body.updated_at,
@@ -46,19 +38,11 @@ describe("GET in api/v1/users/[username]", () => {
       expect(Date.parse(response2Body.updated_at)).not.toBeNaN();
     });
     test("With case mismatch", async () => {
-      const response1 = await fetch("http://localhost:3000/api/v1/users", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          username: "caseDiferente",
-          email: "case.diferente@gmail.com",
-          password: "aaa",
-        }),
+      await orchestrator.createUser({
+        username: "caseDiferente",
+        email: "case.diferente@gmail.com",
+        password: "aaa",
       });
-
-      expect(response1.status).toBe(201);
 
       const response2 = await fetch(
         "http://localhost:3000/api/v1/users/casediferente",
