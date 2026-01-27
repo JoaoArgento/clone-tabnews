@@ -41,18 +41,19 @@ describe("POST in api/v1/users", () => {
       expect(Date.parse(responseBody.created_at)).not.toBeNaN();
       expect(Date.parse(responseBody.updated_at)).not.toBeNaN();
 
-      const userInDatabase = user.findOneByUsername("Joaozera1");
+      const userInDatabase = await user.findOneByUsername("Joaozera1");
+
       const isPasswordCorrect = await password.compare(
         "a",
         userInDatabase.password,
       );
 
+      expect(isPasswordCorrect).toBe(true);
+
       const isPasswordIncorrect = !(await password.compare(
         "bb",
         userInDatabase.password,
       ));
-
-      expect(isPasswordCorrect).toBe(true);
       expect(isPasswordIncorrect).toBe(true);
     });
 
