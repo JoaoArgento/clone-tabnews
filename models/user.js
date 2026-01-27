@@ -10,7 +10,6 @@ async function validateUniqueInfo(colName, info) {
 
   if (result.rowCount > 0) {
     const error = errorFactory.getValidationError(colName);
-    console.log(error);
     throw error;
   }
 }
@@ -37,8 +36,34 @@ async function findOneByUsername(username) {
 }
 
 async function hashPasswordInObject(userInput) {
-  const hashedPassword = password.hash(userInput.password);
+  const hashedPassword = await password.hash(userInput.password);
   userInput.password = hashedPassword;
+}
+
+async function update(username, userInput) {
+  const targetUser = await findOneByUsername(username);
+  if ("username" in userInput) {
+    await validateUniqueInfo("username", userInput.username);
+  }
+  if ("email" in userInput) {
+    await validateUniqueInfo("email", userInput.email);
+  }
+  if ("password" in userInput) {
+    await hashPasswordInObject(userInput);
+  }
+
+  const newUser = { ...targetUser, ...userInput };
+  const updatedUser = await runUpdateQuery(newUser);
+  return updatedUser;
+}
+
+async function runUpdateQuery(user) {
+  const results = await database.query({
+    text: "UPDATE users SET username = $2, email = $3, password = $4, updated_at = timezone('utc', now()) WHERE id = $1 RETURNING *;",
+    values: [user.id, user.username, user.email, user.password],
+  });
+
+  return results.rows[0];
 }
 
 async function create(userInput) {
@@ -53,6 +78,7 @@ async function create(userInput) {
 
 const user = {
   create,
+  update,
   findOneByUsername,
 };
 
