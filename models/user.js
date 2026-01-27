@@ -1,5 +1,6 @@
 import database from "infra/database";
 import { errorFactory } from "infra/errors.js";
+import password from "models/password.js";
 
 async function validateUniqueInfo(colName, info) {
   const result = await database.query({
@@ -9,7 +10,6 @@ async function validateUniqueInfo(colName, info) {
 
   if (result.rowCount > 0) {
     const error = errorFactory.getValidationError(colName);
-    console.log(error);
     throw error;
   }
 }
@@ -35,9 +35,41 @@ async function findOneByUsername(username) {
   return result.rows[0];
 }
 
+async function hashPasswordInObject(userInput) {
+  const hashedPassword = await password.hash(userInput.password);
+  userInput.password = hashedPassword;
+}
+
+async function update(username, userInput) {
+  const targetUser = await findOneByUsername(username);
+  if ("username" in userInput) {
+    await validateUniqueInfo("username", userInput.username);
+  }
+  if ("email" in userInput) {
+    await validateUniqueInfo("email", userInput.email);
+  }
+  if ("password" in userInput) {
+    await hashPasswordInObject(userInput);
+  }
+
+  const newUser = { ...targetUser, ...userInput };
+  const updatedUser = await runUpdateQuery(newUser);
+  return updatedUser;
+}
+
+async function runUpdateQuery(user) {
+  const results = await database.query({
+    text: "UPDATE users SET username = $2, email = $3, password = $4, updated_at = timezone('utc', now()) WHERE id = $1 RETURNING *;",
+    values: [user.id, user.username, user.email, user.password],
+  });
+
+  return results.rows[0];
+}
+
 async function create(userInput) {
   await validateUniqueInfo("email", userInput.email);
   await validateUniqueInfo("username", userInput.username);
+  await hashPasswordInObject(userInput);
 
   const newUser = await runInsertQuery(userInput);
 
@@ -46,6 +78,7 @@ async function create(userInput) {
 
 const user = {
   create,
+  update,
   findOneByUsername,
 };
 
