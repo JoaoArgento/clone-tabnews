@@ -76,6 +76,14 @@ let errorFactory = {
       400,
     );
   },
+  getUnauthorizedError: () => {
+    return new CustomError(
+      "UnauthorizedError",
+      "Dados de autenticação não encontrados",
+      "Verifique se os dados digitados estão corretos",
+      401,
+    );
+  },
 };
 
 export { errorFactory };

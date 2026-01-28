@@ -23,6 +23,17 @@ async function runInsertQuery(userInput) {
   return results.rows[0];
 }
 
+async function findOneBy(infoType, info) {
+  const result = await database.query({
+    text: `SELECT * FROM users WHERE LOWER(${infoType}) = LOWER($1) LIMIT 1`,
+    values: [info],
+  });
+  if (result.rowCount == 0) {
+    throw errorFactory.getNotFoundError();
+  }
+  return result.rows[0];
+}
+
 async function findOneByUsername(username) {
   const result = await database.query({
     text: "SELECT * FROM users WHERE LOWER(username) = LOWER($1) LIMIT 1",
@@ -80,6 +91,7 @@ const user = {
   create,
   update,
   findOneByUsername,
+  findOneBy,
 };
 
 export default user;
