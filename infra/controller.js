@@ -3,15 +3,17 @@ import * as cookie from "cookie";
 import session from "models/session.js";
 
 function onErrorHandler(error, request, response) {
-  // const internalError = errorFactory
-  //   .getInternalServerError()
-  //   .withStatusCode(error.statusCode);
-  response.status(error.statusCode).json(error);
+  if (error.name === "UnauthorizedError") {
+    clearSessionCookie(response);
+  }
+  return response.status(error.statusCode).json(error);
 }
 
 function onNoMatchHandler(request, response) {
   const methodNotAllowedError = errorFactory.getMethodNotAllowedError();
-  response.status(methodNotAllowedError.statusCode).json(methodNotAllowedError);
+  return response
+    .status(methodNotAllowedError.statusCode)
+    .json(methodNotAllowedError);
 }
 
 async function setSessionCookie(sessionToken, response) {
