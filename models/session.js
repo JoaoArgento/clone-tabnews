@@ -29,8 +29,35 @@ async function runInsertQuery(sessionInfo) {
   }
   return results.rows[0];
 }
+
+async function findOneValidByToken(token) {
+  const results = await database.query({
+    text: `SELECT * FROM sessions WHERE token = $1 AND expires_at > NOW() LIMIT 1`,
+    values: [token],
+  });
+  if (results.rowCount == 0) {
+    throw errorFactory.getUnauthorizedError();
+  }
+  return results.rows[0];
+}
+async function renew(sessionId) {
+  const expiresAt = new Date(Date.now() + daysToMS(EXPIRATION_DAY_COUNT));
+
+  const results = await database.query({
+    text: "UPDATE sessions SET expires_at = $2, updated_at = NOW() WHERE id = $1 RETURNING *;",
+    values: [sessionId, expiresAt],
+  });
+
+  if (results.rowCount == 0) {
+    throw errorFactory.getNotFoundError();
+  }
+
+  return results.rows[0];
+}
 const session = {
   create,
+  renew,
+  findOneValidByToken,
   getExpirationDayInMS: () => {
     return daysToMS(EXPIRATION_DAY_COUNT);
   },

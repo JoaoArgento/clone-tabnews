@@ -1,4 +1,6 @@
 import { errorFactory } from "infra/errors";
+import * as cookie from "cookie";
+import session from "models/session.js";
 
 function onErrorHandler(error, request, response) {
   // const internalError = errorFactory
@@ -12,11 +14,23 @@ function onNoMatchHandler(request, response) {
   response.status(methodNotAllowedError.statusCode).json(methodNotAllowedError);
 }
 
+async function setSessionCookie(sessionToken, response) {
+  const cookieInfo = cookie.serialize("session_id", sessionToken, {
+    maxAge: session.getExpirationDayInMS() / 1000,
+    path: "/",
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+  });
+
+  response.setHeader("Set-Cookie", cookieInfo);
+}
+
 const controller = {
   errorHandlers: {
     onNoMatch: onNoMatchHandler,
     onError: onErrorHandler,
   },
+  setSessionCookie,
 };
 
 export default controller;

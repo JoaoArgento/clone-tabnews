@@ -13,7 +13,6 @@ async function validateUniqueInfo(colName, info) {
     throw error;
   }
 }
-
 async function runInsertQuery(userInput) {
   const results = await database.query({
     text: "INSERT INTO users (username, email, password) VALUES ($1, $2, $3) RETURNING *;",
@@ -27,6 +26,17 @@ async function findOneBy(infoType, info) {
   const result = await database.query({
     text: `SELECT * FROM users WHERE LOWER(${infoType}) = LOWER($1) LIMIT 1`,
     values: [info],
+  });
+  if (result.rowCount == 0) {
+    throw errorFactory.getNotFoundError();
+  }
+  return result.rows[0];
+}
+
+async function findOneById(id) {
+  const result = await database.query({
+    text: `SELECT * FROM users WHERE id = $1 LIMIT 1`,
+    values: [id],
   });
   if (result.rowCount == 0) {
     throw errorFactory.getNotFoundError();
@@ -92,6 +102,7 @@ const user = {
   update,
   findOneByUsername,
   findOneBy,
+  findOneById,
 };
 
 export default user;
