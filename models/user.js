@@ -15,8 +15,8 @@ async function validateUniqueInfo(colName, info) {
 }
 async function runInsertQuery(userInput) {
   const results = await database.query({
-    text: "INSERT INTO users (username, email, password) VALUES ($1, $2, $3) RETURNING *;",
-    values: [userInput.username, userInput.email, userInput.password],
+    text: "INSERT INTO users (username, email, password, features) VALUES ($1, $2, $3, $4) RETURNING *;",
+    values: [userInput.username, userInput.email, userInput.password, userInput.features],
   });
 
   return results.rows[0];
@@ -91,10 +91,16 @@ async function create(userInput) {
   await validateUniqueInfo("email", userInput.email);
   await validateUniqueInfo("username", userInput.username);
   await hashPasswordInObject(userInput);
+  insertDefaultFeaturesInObject(userInput);
 
   const newUser = await runInsertQuery(userInput);
 
   return newUser;
+}
+
+function insertDefaultFeaturesInObject(userInput)
+{
+  userInput.features = ["read:activation_token"];
 }
 
 const user = {
