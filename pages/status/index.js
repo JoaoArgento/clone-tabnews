@@ -33,7 +33,9 @@ function StatusInfo() {
       <h1>Status</h1>
       <p>Ultima atualização: {updatedAt}</p>
       <h1>Database info</h1>
+      <h1>test</h1>
       <div>{databaseInfoVisual}</div>
+
     </div>
   );
 }
