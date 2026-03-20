@@ -37,6 +37,7 @@ describe("GET in api/v1/user", () => {
         id: newUser.id,
         username: "Picamoles",
         email: newUser.email,
+        features: ["read:activation_token"],
         password: newUser.password,
         created_at: newUser.created_at.toISOString(),
         updated_at: newUser.updated_at.toISOString(),
@@ -144,6 +145,7 @@ describe("GET in api/v1/user", () => {
         username: "Picão",
         email: newUser.email,
         password: newUser.password,
+        features: ["read:activation_token"],
         created_at: newUser.created_at.toISOString(),
         updated_at: newUser.updated_at.toISOString(),
       });
